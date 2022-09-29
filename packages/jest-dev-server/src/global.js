@@ -25,7 +25,15 @@ const pTreeKill = promisify(treeKill)
 
 const serverLogPrefixer = new stream.Transform({
   transform(chunk, encoding, callback) {
-    this.push(chalk.magentaBright(`[Jest Dev server] ${chunk.toString()}`))
+    const chunkAsString = chunk.toString()
+    const transformedChunk = chunkAsString
+      .split('\n')
+      .filter((line) => line !== '')
+      .map((line) => `${chalk.magentaBright('[Jest Dev server]')} ${line}\n`)
+      .join('')
+
+    this.push(transformedChunk)
+
     callback()
   },
 })
